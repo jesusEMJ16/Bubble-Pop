@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://qu41x0e68wdn"]
+
+[ext_resource type="Texture2D" uid="uid://c08ry06vnxw3f" path="res://nubes/nube1.png" id="1_82dd0"]
+[ext_resource type="Script" path="res://scripts/nubemov.gd" id="1_ae87e"]
+
+[node name="Nube" type="Sprite2D"]
+position = Vector2(499, 473)
+scale = Vector2(0.326, 0.326)
+texture = ExtResource("1_82dd0")
+script = ExtResource("1_ae87e")

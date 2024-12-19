@@ -1,0 +1,28 @@
+[gd_scene load_steps=6 format=3 uid="uid://c3frl6tjq48jl"]
+
+[ext_resource type="FontFile" uid="uid://cujrwo4dlx3m" path="res://fonts/RubikBubbles-Regular.ttf" id="1_h0nlr"]
+[ext_resource type="Script" path="res://scripts/contador.gd" id="2_56mls"]
+
+[sub_resource type="FontVariation" id="FontVariation_xlyup"]
+
+[sub_resource type="Theme" id="Theme_elxm6"]
+/fonts/fuente = SubResource("FontVariation_xlyup")
+
+[sub_resource type="LabelSettings" id="LabelSettings_jbkvc"]
+font = ExtResource("1_h0nlr")
+font_size = 150
+font_color = Color(1, 0.451167, 0.11, 1)
+shadow_size = 5
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(1, 5)
+
+[node name="Label" type="Label"]
+offset_left = 76.0
+offset_top = 81.0
+offset_right = 151.0
+offset_bottom = 260.0
+theme = SubResource("Theme_elxm6")
+theme_override_colors/font_color = Color(1, 0.478431, 0, 1)
+label_settings = SubResource("LabelSettings_jbkvc")
+script = ExtResource("2_56mls")
+metadata/_edit_use_anchors_ = true
