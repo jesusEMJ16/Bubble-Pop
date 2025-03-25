@@ -8,7 +8,6 @@ signal pressed
 var posicion_original: Vector2
 var posicion_originalTimer: Vector2
 var shaking: bool = false # Variable para evitar múltiples tweens simultáneos
-var mostrar_anuncio_derrota = false  # Inicialmente, no mostrar el anuncio
 
 @onready var btn_home = get_node("Menu_panel/HBoxContainer/Home_button")
 @onready var btn_timer = get_node("Menu_panel/HBoxContainer/Timer_button")
@@ -197,9 +196,6 @@ func mostrar_mensaje_perdiste():
 	timer.stop()
 	mostrar_anuncio()
 	print("mostrar mensaje de perder")
-	if mostrar_anuncio_derrota:
-		mostrar_anuncio()  # Mostrar el anuncio si la variable es true
-		mostrar_anuncio_derrota = true  # Establecer la variable a true para que el anuncio se muestre en las próximas derrotas
 
 func mostrar_anuncio():
 	print("ANUNCIOO")
@@ -331,7 +327,7 @@ func _on_survival_pressed() -> void:
 	velocidad_burbujas = 150  # Menor velocidad inicial
 	incremento_velocidad = 2  # Mayor incremento de velocidad
 	incremento_ratio_aparicion = 0.95  # Mayor decremento del tiempo de aparición
-	cantidad_burbujas_por_explosion = 1  # Menos burbujas por explosión al principio
+	cantidad_burbujas_por_explosion = 0.2  # Menos burbujas por explosión al principio
 	burbujamanager.explotar_todas_burbujas_juntas()
 	$Oscuridad_panel/GameOver_panel/VBoxContainer/Finish_label.text = "Finish Survival!"  # Cambiar el texto del Label
 	$button_click_audio.pitch_scale = randf_range(0.8, 1.2)  # Asignar pitch aleatorio

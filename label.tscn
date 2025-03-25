@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://c3frl6tjq48jl"]
 
 [ext_resource type="FontFile" uid="uid://cujrwo4dlx3m" path="res://fonts/RubikBubbles-Regular.ttf" id="1_h0nlr"]
-[ext_resource type="Script" path="res://scripts/contador.gd" id="2_56mls"]
+[ext_resource type="Script" uid="uid://7y0odc6ru4fy" path="res://scripts/contador.gd" id="2_56mls"]
 
 [sub_resource type="FontVariation" id="FontVariation_xlyup"]
 
