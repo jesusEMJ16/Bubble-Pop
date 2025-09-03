@@ -23,31 +23,54 @@ var record_survival = 0
 var boton_seleccionado = "Home"  # Variable para almacenar el botón seleccionado
 # Variables generales para el comportamiento del sistema de burbujas
 
-var tiempo_min = 0.1  #  Tiempo mínimo entre la aparición de burbujas.
-var tiempo_max = 0.5  # Tiempo máximo entre la aparición de burbujas.
+@export var duracion_objetivo := 60.0  # Duración para alcanzar la dificultad máxima
+@export var tiempo_max_inicial := 0.5  # Tiempo inicial entre apariciones de burbujas
+@export var tiempo_max_final := 0.1  # Tiempo mínimo entre apariciones de burbujas
+@export var velocidad_inicial := 150.0  # Velocidad inicial de las burbujas
+@export var velocidad_objetivo := 300.0  # Velocidad máxima de las burbujas
+@export var cantidad_inicial := 3  # Cantidad inicial de burbujas por explosión
+@export var cantidad_objetivo := 8  # Máxima cantidad de burbujas por explosión
 var max_burbujas = 30  # Limitar a 20 burbujas en pantalla
-var velocidad_maxima = 300  # Velocidad máxima de las burbujas
-var velocidad_burbujas = 150  # Velocidad inicial de las burbujas
-var incremento_velocidad = 1  # Incremento de velocidad cada vez que explota una burbuja
-var incremento_ratio_aparicion = 0.98  # Ratio de decremento del tiempo de aparición de burbujas
 var burbujas_explotadas = 0  # Contador de burbujas explotadas
-var cantidad_burbujas_por_explosion = 3  # Cantidad de burbujas generadas por cada explosión
+
+var tiempo_max := tiempo_max_inicial
+var velocidad_burbujas := velocidad_inicial
+var cantidad_burbujas_por_explosion := cantidad_inicial
+
+var tiempo_transcurrido := 0.0
+var tiempo_curve := Curve.new()
+var velocidad_curve := Curve.new()
+var cantidad_curve := Curve.new()
 
 func _ready():
-	posicion_original = contador_label.position
-	posicion_originalTimer = timer_label.position
+        posicion_original = contador_label.position
+        posicion_originalTimer = timer_label.position
 
-	menu_height = $Menu_panel.size.y  # Asignar el valor en _ready()
-	menu_y_original = $Menu_panel.position.y  # Guardar la posición y original
+        menu_height = $Menu_panel.size.y  # Asignar el valor en _ready()
+        menu_y_original = $Menu_panel.position.y  # Guardar la posición y original
 
-	get_node("/root/Control/Menu_panel/Container/Flechas_button").connect("pressed", Callable(self, "animar_menu"))
-	print("Comenzando juego")
-	# Inicializar el estado de los botones
-	_actualizar_estado_botones()
-	timer.connect("timeout", Callable(self, "_on_timeout"))  # Conectar el temporizador al evento de timeout
-	timer.start()  # Iniciar el temporizador
-	# Conectar las burbujas existentes al inicio
-	conectar_burbujas_existentes()
+        get_node("/root/Control/Menu_panel/Container/Flechas_button").connect("pressed", Callable(self, "animar_menu"))
+        print("Comenzando juego")
+        # Inicializar el estado de los botones
+        _actualizar_estado_botones()
+        timer.connect("timeout", Callable(self, "_on_timeout"))  # Conectar el temporizador al evento de timeout
+        timer.wait_time = tiempo_max
+        timer.start()  # Iniciar el temporizador
+        # Configurar curvas de dificultad
+        _actualizar_curvas()
+        # Conectar las burbujas existentes al inicio
+        conectar_burbujas_existentes()
+
+func _actualizar_curvas():
+        tiempo_curve.clear_points()
+        tiempo_curve.add_point(Vector2(0, tiempo_max_inicial))
+        tiempo_curve.add_point(Vector2(1, tiempo_max_final))
+        velocidad_curve.clear_points()
+        velocidad_curve.add_point(Vector2(0, velocidad_inicial))
+        velocidad_curve.add_point(Vector2(1, velocidad_objetivo))
+        cantidad_curve.clear_points()
+        cantidad_curve.add_point(Vector2(0, cantidad_inicial))
+        cantidad_curve.add_point(Vector2(1, cantidad_objetivo))
 	
 func guardar_record(burbujas_explotadas):
 	var config = ConfigFile.new()
@@ -93,9 +116,17 @@ func _actualizar_estado_botones():
 		btn_home.modulate = Color(0, 0, 1)
 	elif boton_seleccionado == "Timer":
 		btn_timer.modulate = Color(0, 0, 1)
-	elif boton_seleccionado == "Survival":
-		btn_survival.modulate = Color(0, 0, 1)
-		
+        elif boton_seleccionado == "Survival":
+                btn_survival.modulate = Color(0, 0, 1)
+
+
+func _process(delta):
+        tiempo_transcurrido += delta
+        var progreso = clamp(tiempo_transcurrido / duracion_objetivo, 0.0, 1.0)
+        tiempo_max = tiempo_curve.sample(progreso)
+        velocidad_burbujas = velocidad_curve.sample(progreso)
+        cantidad_burbujas_por_explosion = int(round(cantidad_curve.sample(progreso)))
+
 
 func _input(event):
 	if event is InputEventScreenDrag:
@@ -120,11 +151,10 @@ func conectar_burbuja(burbuja):
 		burbuja.connect("burbuja_explotada", Callable(self, "_on_bubble_popped"))
 
 func _on_timeout():
-	if get_tree().get_nodes_in_group("burbuja").size() < max_burbujas:
-		generar_burbuja()
-	tiempo_max = max(tiempo_min, tiempo_max * incremento_ratio_aparicion)
-	timer.set_wait_time(tiempo_max)
-	timer.start()
+        if get_tree().get_nodes_in_group("burbuja").size() < max_burbujas:
+                generar_burbuja()
+        timer.wait_time = tiempo_max
+        timer.start()
 
 func generar_burbuja():
 	var burbuja = preload("res://burbuja.tscn").instantiate()
@@ -135,13 +165,9 @@ func generar_burbuja():
 	conectar_burbuja(burbuja)
 
 func _on_bubble_popped():
-	burbujas_explotadas += 1
-	velocidad_burbujas = min(velocidad_burbujas + incremento_velocidad, velocidad_maxima)
-	print("Burbujas explotadas:", burbujas_explotadas)  # Print añadido
-	print("Velocidad actual de las burbujas: ", velocidad_burbujas)
-	contador_label.text = str(burbujas_explotadas)
-	if burbujas_explotadas % 10 == 0:
-		cantidad_burbujas_por_explosion += 1
+        burbujas_explotadas += 1
+        print("Burbujas explotadas:", burbujas_explotadas)  # Print añadido
+        contador_label.text = str(burbujas_explotadas)
 
 func animar_menu():
 	var tween = create_tween()
@@ -270,76 +296,93 @@ func _on_button_pressed() -> void:
 
 
 func _on_home_pressed() -> void:
-	tiempo_min = 0.1
-	tiempo_max = 0.5
-	max_burbujas = 30
-	velocidad_maxima = 200
-	velocidad_burbujas = 150
-	incremento_velocidad = 1
-	incremento_ratio_aparicion = 0.98
-	cantidad_burbujas_por_explosion = 3
-	burbujamanager.explotar_todas_burbujas_juntas()
-	$button_click_audio.pitch_scale = randf_range(0.8, 1.2)  # Asignar pitch aleatorio
-	$button_click_audio.play()  # Reproducir el sonido
-	boton_seleccionado = "Home"
-	print("Botón Home presionado en:")
-	$Timer60_label.tiempo_restante = 60 # Reiniciar el temporizador
-	$Timer60_label.visible = false # Mostrar el Timer60
-	$Contador_label.reiniciar_contador()
-	burbujas_explotadas = 0
-	$Timer60_label.is_timer_active = false  # Sincroniza el estado del temporizador
-	get_node("/root/Control/Oscuridad_panel").visible = false  # Mostrar el panel Oscuridad_panel
-	timer.start()
-	_actualizar_estado_botones()
+        tiempo_max_inicial = 0.5
+        tiempo_max_final = 0.1
+        velocidad_inicial = 150
+        velocidad_objetivo = 200
+        cantidad_inicial = 3
+        cantidad_objetivo = 5
+        duracion_objetivo = 60
+        max_burbujas = 30
+        tiempo_max = tiempo_max_inicial
+        velocidad_burbujas = velocidad_inicial
+        cantidad_burbujas_por_explosion = cantidad_inicial
+        tiempo_transcurrido = 0.0
+        _actualizar_curvas()
+        burbujamanager.explotar_todas_burbujas_juntas()
+        $button_click_audio.pitch_scale = randf_range(0.8, 1.2)  # Asignar pitch aleatorio
+        $button_click_audio.play()  # Reproducir el sonido
+        boton_seleccionado = "Home"
+        print("Botón Home presionado en:")
+        $Timer60_label.tiempo_restante = 60 # Reiniciar el temporizador
+        $Timer60_label.visible = false # Mostrar el Timer60
+        $Contador_label.reiniciar_contador()
+        burbujas_explotadas = 0
+        $Timer60_label.is_timer_active = false  # Sincroniza el estado del temporizador
+        get_node("/root/Control/Oscuridad_panel").visible = false  # Mostrar el panel Oscuridad_panel
+        timer.wait_time = tiempo_max
+        timer.start()
+        _actualizar_estado_botones()
 	
 
 func _on_timer_pressed() -> void:
-	tiempo_min = 0.1  # Menor tiempo mínimo
-	tiempo_max = 0.1  # Menor tiempo máximo
-	max_burbujas = 80  # Más burbujas
-	velocidad_maxima = 600  # Mayor velocidad máxima
-	velocidad_burbujas = 500  # Mayor velocidad inicial
-	incremento_velocidad = 5  # Sin incremento de velocidad
-	incremento_ratio_aparicion = 1  # Sin decremento del tiempo de aparición
-	cantidad_burbujas_por_explosion = 30  # Más burbujas por explosión
-	
-	burbujamanager.explotar_todas_burbujas_juntas()
-	$Oscuridad_panel/GameOver_panel/VBoxContainer/Finish_label.text = "Finish Time!"  # Cambiar el texto del Label
-	$button_click_audio.pitch_scale = randf_range(0.8, 1.2)  # Asignar pitch aleatorio
-	$button_click_audio.play()  # Reproducir el sonido
-	boton_seleccionado = "Timer"
-	$Timer60_label.is_timer_active = true  # Sincroniza el estado del temporizador
-	#Contador Timer60
-	$Timer60_label.tiempo_restante = 30 # Reiniciar el temporizador
-	$Timer60_label.visible = true # Mostrar el Timer60
-	$Contador_label.reiniciar_contador()
-	burbujas_explotadas = 0
-	get_node("/root/Control/Oscuridad_panel").visible = false  # Mostrar el panel Oscuridad_panel
-	timer.start()
-	_actualizar_estado_botones()
+        tiempo_max_inicial = 0.1
+        tiempo_max_final = 0.1
+        velocidad_inicial = 500
+        velocidad_objetivo = 600
+        cantidad_inicial = 30
+        cantidad_objetivo = 30
+        duracion_objetivo = 30
+        max_burbujas = 80
+        tiempo_max = tiempo_max_inicial
+        velocidad_burbujas = velocidad_inicial
+        cantidad_burbujas_por_explosion = cantidad_inicial
+        tiempo_transcurrido = 0.0
+        _actualizar_curvas()
+        burbujamanager.explotar_todas_burbujas_juntas()
+        $Oscuridad_panel/GameOver_panel/VBoxContainer/Finish_label.text = "Finish Time!"  # Cambiar el texto del Label
+        $button_click_audio.pitch_scale = randf_range(0.8, 1.2)  # Asignar pitch aleatorio
+        $button_click_audio.play()  # Reproducir el sonido
+        boton_seleccionado = "Timer"
+        $Timer60_label.is_timer_active = true  # Sincroniza el estado del temporizador
+        #Contador Timer60
+        $Timer60_label.tiempo_restante = 30 # Reiniciar el temporizador
+        $Timer60_label.visible = true # Mostrar el Timer60
+        $Contador_label.reiniciar_contador()
+        burbujas_explotadas = 0
+        get_node("/root/Control/Oscuridad_panel").visible = false  # Mostrar el panel Oscuridad_panel
+        timer.wait_time = tiempo_max
+        timer.start()
+        _actualizar_estado_botones()
 
 
 func _on_survival_pressed() -> void:
-	tiempo_min = 0.1  # Mayor tiempo mínimo
-	tiempo_max = 0.5  # Mayor tiempo máximo
-	max_burbujas = 30  # Menos burbujas al principio
-	velocidad_maxima = 500  # Mayor velocidad máxima
-	velocidad_burbujas = 150  # Menor velocidad inicial
-	incremento_velocidad = 2  # Mayor incremento de velocidad
-	incremento_ratio_aparicion = 0.95  # Mayor decremento del tiempo de aparición
-	cantidad_burbujas_por_explosion = 0.2  # Menos burbujas por explosión al principio
-	burbujamanager.explotar_todas_burbujas_juntas()
-	$Oscuridad_panel/GameOver_panel/VBoxContainer/Finish_label.text = "Finish Survival!"  # Cambiar el texto del Label
-	$button_click_audio.pitch_scale = randf_range(0.8, 1.2)  # Asignar pitch aleatorio
-	$button_click_audio.play()  # Reproducir el sonido
-	$Timer60_label.tiempo_restante = 60 # Reiniciar el temporizador
-	$Timer60_label.visible = false # Mostrar el Timer60
-	boton_seleccionado = "Survival"
-	$Contador_label.reiniciar_contador()
-	burbujas_explotadas = 0
-	$Timer60_label.is_timer_active = false  # Sincroniza el estado del temporizador
-	get_node("/root/Control/Oscuridad_panel").visible = false  # Mostrar el panel Oscuridad_panel
-	timer.start()
+        tiempo_max_inicial = 0.5
+        tiempo_max_final = 0.1
+        velocidad_inicial = 150
+        velocidad_objetivo = 500
+        cantidad_inicial = 1
+        cantidad_objetivo = 8
+        duracion_objetivo = 120
+        max_burbujas = 30
+        tiempo_max = tiempo_max_inicial
+        velocidad_burbujas = velocidad_inicial
+        cantidad_burbujas_por_explosion = cantidad_inicial
+        tiempo_transcurrido = 0.0
+        _actualizar_curvas()
+        burbujamanager.explotar_todas_burbujas_juntas()
+        $Oscuridad_panel/GameOver_panel/VBoxContainer/Finish_label.text = "Finish Survival!"  # Cambiar el texto del Label
+        $button_click_audio.pitch_scale = randf_range(0.8, 1.2)  # Asignar pitch aleatorio
+        $button_click_audio.play()  # Reproducir el sonido
+        $Timer60_label.tiempo_restante = 60 # Reiniciar el temporizador
+        $Timer60_label.visible = false # Mostrar el Timer60
+        boton_seleccionado = "Survival"
+        $Contador_label.reiniciar_contador()
+        burbujas_explotadas = 0
+        $Timer60_label.is_timer_active = false  # Sincroniza el estado del temporizador
+        get_node("/root/Control/Oscuridad_panel").visible = false  # Mostrar el panel Oscuridad_panel
+        timer.wait_time = tiempo_max
+        timer.start()
 	_actualizar_estado_botones()
 
 
