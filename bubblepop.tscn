@@ -1,0 +1,476 @@
+[gd_scene load_steps=36 format=3 uid="uid://08wksnuucmyh"]
+
+[ext_resource type="Script" uid="uid://c1j2wf7t2n0l2" path="res://scripts/spawner.gd" id="1_g6fsr"]
+[ext_resource type="Texture2D" uid="uid://cnredm72dqjxi" path="res://fondo/cielo.png" id="1_qi0fv"]
+[ext_resource type="PackedScene" uid="uid://dkl0ov3vkn76o" path="res://addons/admob/sample/Interstitial.tscn" id="2_6u88u"]
+[ext_resource type="AudioStream" uid="uid://dv3y511adqb15" path="res://sonidos/loopmusic.mp3" id="2_j2ffa"]
+[ext_resource type="PackedScene" uid="uid://dtommqnyhfuh0" path="res://burbuja.tscn" id="2_n3equ"]
+[ext_resource type="Script" uid="uid://dpf6svceo44oh" path="res://scripts/BurbujaManager_script.gd" id="2_xpe8b"]
+[ext_resource type="PackedScene" uid="uid://c3frl6tjq48jl" path="res://label.tscn" id="3_1jrp0"]
+[ext_resource type="AudioStream" uid="uid://b3dd6iq4nfiqc" path="res://sonidos/bajar_sound.wav" id="4_jqnmm"]
+[ext_resource type="AudioStream" uid="uid://cps2jsncc6ftf" path="res://sonidos/subir_sound.wav" id="5_kkjrm"]
+[ext_resource type="Script" uid="uid://dloj2ek0sh4e4" path="res://scripts/nubes.gd" id="5_q1te6"]
+[ext_resource type="PackedScene" uid="uid://qu41x0e68wdn" path="res://Nube.tscn" id="6_a1g8x"]
+[ext_resource type="Script" uid="uid://cv0kepkjdt2qg" path="res://scripts/RestarTimer.gd" id="7_ms11r"]
+[ext_resource type="Texture2D" uid="uid://dt8y5ow0dmmqp" path="res://iconos/home.png" id="8_abb5c"]
+[ext_resource type="Texture2D" uid="uid://doubkyx30w35i" path="res://iconos/flecha_abajo.png" id="8_hgq46"]
+[ext_resource type="Texture2D" uid="uid://b50n28mpa263x" path="res://iconos/timer.png" id="9_2rvh1"]
+[ext_resource type="FontFile" uid="uid://cujrwo4dlx3m" path="res://fonts/RubikBubbles-Regular.ttf" id="9_bir7j"]
+[ext_resource type="Texture2D" uid="uid://nfief5a6spsr" path="res://iconos/bubble.png" id="10_4w47w"]
+[ext_resource type="Texture2D" uid="uid://ckn80go8bndnl" path="res://iconos/undo.png" id="10_yfrdt"]
+[ext_resource type="Texture2D" uid="uid://drpn2hw65un08" path="res://iconos/cancel.png" id="11_ypu05"]
+[ext_resource type="AudioStream" uid="uid://by2ivvow2rvig" path="res://sonidos/click_button.wav" id="16_sbd7p"]
+
+[sub_resource type="FontVariation" id="FontVariation_bm8v0"]
+
+[sub_resource type="Theme" id="Theme_0uwbl"]
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_disabled_color = Color(1, 1, 1, 1)
+Button/colors/font_outline_color = Color(1, 1, 1, 1)
+Button/colors/icon_disabled_color = Color(1, 1, 1, 1)
+Button/fonts/font = SubResource("FontVariation_bm8v0")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avqys"]
+bg_color = Color(0.913725, 0, 0, 0.384314)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fc1vr"]
+bg_color = Color(0, 0, 0, 0.580392)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u4ivo"]
+bg_color = Color(1, 1, 0.921569, 1)
+border_width_left = 25
+border_width_top = 25
+border_width_right = 25
+border_width_bottom = 25
+border_color = Color(1, 0.501961, 0.168627, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+shadow_size = 5
+shadow_offset = Vector2(10, 20)
+
+[sub_resource type="LabelSettings" id="LabelSettings_mnwsr"]
+font = ExtResource("9_bir7j")
+font_size = 80
+font_color = Color(1, 0.501961, 0.168627, 1)
+shadow_size = 5
+shadow_color = Color(0, 0, 0, 0.788235)
+shadow_offset = Vector2(1, 3.13)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_twas6"]
+bg_color = Color(0.000645722, 0.218362, 1, 1)
+border_width_left = 25
+border_width_top = 25
+border_width_right = 25
+border_width_bottom = 25
+border_color = Color(1, 0.501961, 0.168627, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+shadow_color = Color(0, 0, 0, 1)
+shadow_size = 5
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="LabelSettings" id="LabelSettings_lvs87"]
+font = ExtResource("9_bir7j")
+font_size = 46
+shadow_size = 5
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l5rp5"]
+bg_color = Color(0, 0.219608, 0.666667, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+shadow_color = Color(0, 0, 0, 1)
+shadow_size = 5
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="FontFile" id="FontFile_qck3s"]
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/1/variation_coordinates = {}
+cache/1/face_index = 0
+cache/1/embolden = 0.9
+cache/1/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/1/spacing_top = 0
+cache/1/spacing_bottom = 0
+cache/1/spacing_space = 0
+cache/1/spacing_glyph = 0
+cache/1/baseline_offset = 0.0
+cache/1/40/0/ascent = 0.0
+cache/1/40/0/descent = 0.0
+cache/1/40/0/underline_position = 0.0
+cache/1/40/0/underline_thickness = 0.0
+cache/1/40/0/scale = 1.0
+cache/1/16/0/ascent = 0.0
+cache/1/16/0/descent = 0.0
+cache/1/16/0/underline_position = 0.0
+cache/1/16/0/underline_thickness = 0.0
+cache/1/16/0/scale = 1.0
+
+[sub_resource type="FontVariation" id="FontVariation_4bqor"]
+base_font = SubResource("FontFile_qck3s")
+variation_embolden = 0.9
+
+[sub_resource type="Theme" id="Theme_kbkrg"]
+default_font = SubResource("FontVariation_4bqor")
+default_font_size = 40
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xqhd0"]
+bg_color = Color(0.652227, 2.04556e-06, 1.44392e-07, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+shadow_color = Color(0, 0, 0, 1)
+shadow_size = 5
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5020i"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 0.501961, 0.168627, 1)
+border_width_left = 2
+border_width_top = 5
+border_width_right = 2
+border_color = Color(1, 0.282353, 0.168627, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+shadow_offset = Vector2(5, -5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yj6ai"]
+size = Vector2(100, 110)
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_0uwbl")
+script = ExtResource("1_g6fsr")
+
+[node name="Interstitial" parent="." instance=ExtResource("2_6u88u")]
+layout_mode = 0
+
+[node name="BurbujaManager" type="Node" parent="."]
+script = ExtResource("2_xpe8b")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+process_mode = 1
+stream = ExtResource("2_j2ffa")
+volume_db = -20.0
+autoplay = true
+parameters/looping = true
+
+[node name="SoundPlayer" type="AudioStreamPlayer" parent="."]
+
+[node name="button_click_audio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("16_sbd7p")
+volume_db = 10.0
+
+[node name="Bajar_audio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_jqnmm")
+
+[node name="Subir_audio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_kkjrm")
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[node name="Fondo" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -385.5
+offset_top = -340.5
+offset_right = 385.5
+offset_bottom = 340.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_qi0fv")
+
+[node name="Panel_lose" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_avqys")
+
+[node name="NubeSpawner" type="Node2D" parent="."]
+script = ExtResource("5_q1te6")
+
+[node name="Timer" type="Timer" parent="NubeSpawner"]
+wait_time = 5.0
+autostart = true
+
+[node name="Nube" parent="NubeSpawner" instance=ExtResource("6_a1g8x")]
+position = Vector2(514, 313)
+
+[node name="Nube2" parent="NubeSpawner" instance=ExtResource("6_a1g8x")]
+position = Vector2(244, 1593)
+
+[node name="Nube3" parent="NubeSpawner" instance=ExtResource("6_a1g8x")]
+position = Vector2(562, 989)
+
+[node name="Contador_label" parent="." instance=ExtResource("3_1jrp0")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0157407
+anchor_top = 0.0223959
+anchor_right = 0.0462963
+anchor_bottom = 0.0223959
+offset_left = 33.0
+offset_top = 13.9999
+offset_right = 108.0
+offset_bottom = 193.0
+mouse_filter = 1
+text = "0"
+
+[node name="Timer60_label" parent="." instance=ExtResource("3_1jrp0")]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -194.0
+offset_top = 57.0
+offset_right = 0.0
+offset_bottom = 236.0
+grow_horizontal = 0
+mouse_filter = 1
+horizontal_alignment = 2
+vertical_alignment = 1
+script = ExtResource("7_ms11r")
+
+[node name="Area2D" parent="." instance=ExtResource("2_n3equ")]
+
+[node name="Oscuridad_panel" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_fc1vr")
+
+[node name="GameOver_panel" type="Panel" parent="Oscuridad_panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -401.0
+offset_top = -560.0
+offset_right = 399.0
+offset_bottom = 340.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_u4ivo")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Oscuridad_panel/GameOver_panel"]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -294.0
+offset_top = 115.0
+offset_right = 306.0
+offset_bottom = -251.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Finish_label" type="Label" parent="Oscuridad_panel/GameOver_panel/VBoxContainer"]
+layout_mode = 2
+text = "Finished!"
+label_settings = SubResource("LabelSettings_mnwsr")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Labels_panel" type="Panel" parent="Oscuridad_panel/GameOver_panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_twas6")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Oscuridad_panel/GameOver_panel/VBoxContainer/Labels_panel"]
+layout_mode = 2
+offset_left = 39.0
+offset_top = 53.0
+offset_right = 574.0
+offset_bottom = 367.0
+
+[node name="Explotadas_label" type="Label" parent="Oscuridad_panel/GameOver_panel/VBoxContainer/Labels_panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Bubble Popped: "
+label_settings = SubResource("LabelSettings_lvs87")
+
+[node name="Record_label" type="Label" parent="Oscuridad_panel/GameOver_panel/VBoxContainer/Labels_panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Your Record: 
+"
+label_settings = SubResource("LabelSettings_lvs87")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Oscuridad_panel/GameOver_panel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 85.0
+offset_top = -201.0
+offset_right = -87.0
+offset_bottom = -78.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 2
+
+[node name="Reset_panel" type="Panel" parent="Oscuridad_panel/GameOver_panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_l5rp5")
+
+[node name="Reset_button" type="Button" parent="Oscuridad_panel/GameOver_panel/HBoxContainer/Reset_panel"]
+clip_contents = true
+layout_mode = 2
+offset_left = 4.0
+offset_right = 314.0
+offset_bottom = 127.0
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 1
+theme = SubResource("Theme_kbkrg")
+text = "Reset"
+icon = ExtResource("10_yfrdt")
+flat = true
+icon_alignment = 1
+vertical_icon_alignment = 0
+
+[node name="HSplitContainer" type="HSplitContainer" parent="Oscuridad_panel/GameOver_panel/HBoxContainer"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+
+[node name="Cancel_panel" type="Panel" parent="Oscuridad_panel/GameOver_panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_xqhd0")
+
+[node name="Cancel_button" type="Button" parent="Oscuridad_panel/GameOver_panel/HBoxContainer/Cancel_panel"]
+clip_contents = true
+layout_mode = 2
+offset_left = 4.0
+offset_right = 314.0
+offset_bottom = 127.0
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 1
+theme = SubResource("Theme_kbkrg")
+text = "Cancel"
+icon = ExtResource("11_ypu05")
+flat = true
+icon_alignment = 1
+vertical_icon_alignment = 0
+
+[node name="Menu_panel" type="Panel" parent="."]
+z_index = 4096
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -173.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_5020i")
+
+[node name="Container" type="Container" parent="Menu_panel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -130.0
+offset_top = -101.945
+offset_right = -90.0
+offset_bottom = -61.945
+grow_horizontal = 0
+
+[node name="Flechas_button" type="TouchScreenButton" parent="Menu_panel/Container"]
+position = Vector2(15, -10)
+texture_normal = ExtResource("8_hgq46")
+shape = SubResource("RectangleShape2D_yj6ai")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Menu_panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Home_button" type="Button" parent="Menu_panel/HBoxContainer"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 1
+theme = SubResource("Theme_kbkrg")
+text = "Home"
+icon = ExtResource("8_abb5c")
+flat = true
+icon_alignment = 1
+vertical_icon_alignment = 0
+
+[node name="Survival_button" type="Button" parent="Menu_panel/HBoxContainer"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 1
+theme = SubResource("Theme_kbkrg")
+text = "Survival"
+icon = ExtResource("10_4w47w")
+flat = true
+icon_alignment = 1
+vertical_icon_alignment = 0
+
+[node name="Timer_button" type="Button" parent="Menu_panel/HBoxContainer"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 1
+theme = SubResource("Theme_kbkrg")
+text = "Timer"
+icon = ExtResource("9_2rvh1")
+flat = true
+icon_alignment = 1
+vertical_icon_alignment = 0
+
+[connection signal="gui_input" from="Contador_label" to="." method="_on_contador_label_gui_input"]
+[connection signal="gui_input" from="Timer60_label" to="." method="_on_timer_60_label_gui_input"]
+[connection signal="pressed" from="Oscuridad_panel/GameOver_panel/HBoxContainer/Reset_panel/Reset_button" to="." method="_on_reset_button_pressed"]
+[connection signal="pressed" from="Oscuridad_panel/GameOver_panel/HBoxContainer/Cancel_panel/Cancel_button" to="." method="_on_home_pressed"]
+[connection signal="pressed" from="Menu_panel/HBoxContainer/Home_button" to="." method="_on_home_pressed"]
+[connection signal="pressed" from="Menu_panel/HBoxContainer/Survival_button" to="." method="_on_survival_pressed"]
+[connection signal="pressed" from="Menu_panel/HBoxContainer/Timer_button" to="." method="_on_timer_pressed"]
